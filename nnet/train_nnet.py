@@ -63,7 +63,7 @@ def run():
     # Build the MLP.
     structure = [nn.Linear(feadim, args.nunits), nn.Tanh()]
     for i in range(args.nlayers - 1):
-        structure += [nn.Linear(args.nunits, args.nunits), nn.Relu()]
+        structure += [nn.Linear(args.nunits, args.nunits), nn.Tanh()]
     structure += [nn.Linear(args.nunits, targetdim)]
     model = nn.Sequential(*structure)
 
