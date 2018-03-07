@@ -1,4 +1,4 @@
-Trained a neural network where some of the training features frames
+Train a neural network where some of the training features frames
 are shifted by some offset.
 
 Dependencies
