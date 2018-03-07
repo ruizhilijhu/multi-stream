@@ -1,0 +1,12 @@
+Trained a neural network where some of the training features frames
+are shifted by some offset.
+
+Dependencies
+-----------
+
+  - numpy
+  - scipy
+  - pytorch
+  - beer
+  - bokeh
+
