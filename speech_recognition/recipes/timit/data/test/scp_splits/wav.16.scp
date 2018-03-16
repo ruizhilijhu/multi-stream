@@ -1,0 +1,2 @@
+FMGD0_SX34 /export/b18/ssadhu/kaldi/egs/timit/s5/../../../tools/sph2pipe_v2.5/sph2pipe -f wav /export/corpora5/LDC/LDC93S1/timit/TIMIT/TEST/DR6/FMGD0/SX34.WAV |
+FMGD0_SX394 /export/b18/ssadhu/kaldi/egs/timit/s5/../../../tools/sph2pipe_v2.5/sph2pipe -f wav /export/corpora5/LDC/LDC93S1/timit/TIMIT/TEST/DR6/FMGD0/SX394.WAV |

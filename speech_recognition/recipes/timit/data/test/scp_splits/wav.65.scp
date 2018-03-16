@@ -1,0 +1,2 @@
+MLLL0_SI1363 /export/b18/ssadhu/kaldi/egs/timit/s5/../../../tools/sph2pipe_v2.5/sph2pipe -f wav /export/corpora5/LDC/LDC93S1/timit/TIMIT/TEST/DR4/MLLL0/SI1363.WAV |
+MLLL0_SI1993 /export/b18/ssadhu/kaldi/egs/timit/s5/../../../tools/sph2pipe_v2.5/sph2pipe -f wav /export/corpora5/LDC/LDC93S1/timit/TIMIT/TEST/DR4/MLLL0/SI1993.WAV |

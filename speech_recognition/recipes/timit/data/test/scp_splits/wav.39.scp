@@ -1,0 +1,2 @@
+MCMJ0_SX14 /export/b18/ssadhu/kaldi/egs/timit/s5/../../../tools/sph2pipe_v2.5/sph2pipe -f wav /export/corpora5/LDC/LDC93S1/timit/TIMIT/TEST/DR6/MCMJ0/SX14.WAV |
+MCMJ0_SX194 /export/b18/ssadhu/kaldi/egs/timit/s5/../../../tools/sph2pipe_v2.5/sph2pipe -f wav /export/corpora5/LDC/LDC93S1/timit/TIMIT/TEST/DR6/MCMJ0/SX194.WAV |

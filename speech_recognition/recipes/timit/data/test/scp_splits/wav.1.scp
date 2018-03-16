@@ -1,0 +1,2 @@
+FDHC0_SI1559 /export/b18/ssadhu/kaldi/egs/timit/s5/../../../tools/sph2pipe_v2.5/sph2pipe -f wav /export/corpora5/LDC/LDC93S1/timit/TIMIT/TEST/DR7/FDHC0/SI1559.WAV |
+FDHC0_SI2189 /export/b18/ssadhu/kaldi/egs/timit/s5/../../../tools/sph2pipe_v2.5/sph2pipe -f wav /export/corpora5/LDC/LDC93S1/timit/TIMIT/TEST/DR7/FDHC0/SI2189.WAV |

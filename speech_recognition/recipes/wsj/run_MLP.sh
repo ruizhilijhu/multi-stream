@@ -2,7 +2,7 @@
 
 . ./include_path.sh
 
-
+exp_name=experiment_1
 ali=ali_dir
 nj_ali=10
 nj_featgen=500
@@ -11,14 +11,15 @@ mkdir -p $PHN_dir
 phone_file=./phones.txt
 feat_dir=fdlp_feats
 command=queue.pl
-
+fdlp_spectrum=true
+<<skip
 echo =================
 echo "Data Preparation"
 echo =================
 
 python ./local/getPhoneFile.py $ali $nj_ali $PHN_dir $phone_file
 echo "Data Preparation finshed..."
-
+skip
 echo =======================================
 echo "Modulation Spectral Feature Generation"
 echo =======================================
@@ -42,20 +43,42 @@ for n in $(seq 50); do
 done 
 
 # Extract Modulation Spectral features 
-#
-feat_gen_options="--get_phone_labels --only_center"
+
+feat_gen_options="--get_phone_labels"
+nfilters=15
+nmodulations=12
+order=50
+fduration=0.5
+frate=100
+around_center=0
+
 mkdir -p $feat_dir
 mkdir -p $feat_dir/log
 
-echo "Computing FDLP features for Train and Test files..."
+if $fdlp_spectrum; then 
+  echo "Computing FDLP spectral features for Train and Test files..."
 
-$command -l arch=*64 -sync no --mem 5G --gpu 0 JOB=51:$nj_featgen \
-  ./fdlp_feats/log/fdlp_$set.JOB.log python -u ../../tools/modSpecFeatsCompute.py --get_phone_labels --only_center \
-         $split_dir/wav_$set.JOB.scp $feat_dir/$set.feats.JOB.npy ./conf/phone.map $PHN_dir &
-$command -l arch=*64 -sync no --mem 5G --gpu 0 JOB=1:50 \
-  ./fdlp_feats/log/fdlp_test.JOB.log python -u ../../tools/modSpecFeatsCompute.py --get_phone_labels --only_center \
-        $split_dir/wav_test.JOB.scp $feat_dir/test.feats.JOB.npy ./conf/phone.map $PHN_dir
+  $command -l arch=*64 -sync no --mem 5G --gpu 0 JOB=51:$nj_featgen \
+    ./fdlp_feats/log/fdlp_$set.JOB.log python -u  ../../tools/computeFDLPSpectralFeats.py $feat_gen_options \
+      $split_dir/wav_$set.JOB.scp $feat_dir/$set.feats.JOB.npy \
+        ./conf/phone.map $PHN_dir $nfilters $order $fduration $frate 
+else
 
+  echo "Computing FDLP modulation spectral features for Train and Test files..."
+
+  $command -l arch=*64 -sync no --mem 5G --gpu 0 JOB=51:$nj_featgen \
+    ./fdlp_feats/log/fdlp_$set.JOB.log python -u ../../tools/computeFDLPModSpecFeats.py $feat_gen_options \
+           $split_dir/wav_$set.JOB.scp $feat_dir/$set.feats.JOB.npy \
+              ./conf/phone.map $PHN_dir $nfilters $nmodulations $order $fduration $frate \
+                  $around_center &
+  $command -l arch=*64 -sync no --mem 5G --gpu 0 JOB=1:50 \
+    ./fdlp_feats/log/fdlp_test.JOB.log python -u ../../tools/computeFDLPModSpecFeats.py $feat_gen_options \
+          $split_dir/wav_test.JOB.scp $feat_dir/test.feats.JOB.npy \ 
+              ./conf/phone.map $PHN_dir $nfilters $nmodulations $order $fduration $frate \
+                  $around_center
+fi
+
+wait
 echo "Gather up all the data..."
 
 python ./local/gatherAllData.py $feat_dir
@@ -77,4 +100,40 @@ node_num=256
 model_out=./exp/final.mdl
 log_dir=./exp/log/mlp_train.log
 qsub -cwd -j y -o $log_dir -e $log_dir -m eas -M sadhusamik@gmail.com \
-  -l mem_free=50G,gpu=1,h=g01 -pe smp 1 -V ./python_run_MLP.sh $epoch_num $validation_rate $feat_dir $class_num $hid_num $node_num $model_out $log_dir
+  -l mem_free=50G,gpu=1,h=g01 -pe smp 1 -V ./local/python_run_MLP.sh $epoch_num $validation_rate $feat_dir $class_num $hid_num $node_num $model_out $log_dir
+
+
+echo "Moving model and feature files out of code directory..."
+
+move_exp_dir=../../experiments/$exp_name
+mkdir -p $move_exp_dir
+#mv $feat_dir $exp $move_exp_dir
+
+rm -f $move_exp_dir/MLP_parameters
+
+cat << EOF >> $move_exp_dir/MLP_parameters 
+### MLP Details ### 
+epoch_num=$epoch_num
+validation_rate=$validation_rate
+class_num=$class_num
+hid_num=$hid_num
+node_num=$node_num
+model_out=$model_out
+log_dir=$log_dir
+EOF
+
+rm -f $move_exp_dir/feature_parameters 
+
+cat << EOF >> $move_exp_dir/feature_parameters 
+### Feature Extraction Details ###
+fdlp_spectrum=$fdlp_spectrum
+feat_gen_options=$feat_gen_options
+nfilters=$nfilters
+nmodulations=$nmodulations
+order=$order
+fduration=$fduration
+frate=$frate
+around_center=$around_center
+EOF
+
+

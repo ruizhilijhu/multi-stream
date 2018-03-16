@@ -1,0 +1,2 @@
+FPKT0_SX8 /export/b18/ssadhu/kaldi/egs/timit/s5/../../../tools/sph2pipe_v2.5/sph2pipe -f wav /export/corpora5/LDC/LDC93S1/timit/TIMIT/TEST/DR3/FPKT0/SX8.WAV |
+FPKT0_SX98 /export/b18/ssadhu/kaldi/egs/timit/s5/../../../tools/sph2pipe_v2.5/sph2pipe -f wav /export/corpora5/LDC/LDC93S1/timit/TIMIT/TEST/DR3/FPKT0/SX98.WAV |
