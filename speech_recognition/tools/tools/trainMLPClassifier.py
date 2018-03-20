@@ -242,7 +242,7 @@ if __name__ == '__main__':
                         help='frequency of the validation')
     parser.add_argument('--weight-decay', type=float, default=0.0,
                         help='L2 regularization')
-    parser.add_argument('--put_kink', help='Puts a 64 dimension layer at the beginning to plot filters',action='store_true')
+    parser.add_argument('--put_kink', help='Puts a 256 dimension layer at the beginning to plot filters',action='store_true')
     args = parser.parse_args()
 
     assert args.nlayers > 0
