@@ -7,6 +7,8 @@ fi
 
 . path.sh
 
+export CUDA_VISIBLE_DEVICES=$(free-gpu)
+
 cmd=$1
 
 $cmd

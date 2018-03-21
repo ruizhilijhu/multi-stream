@@ -22,6 +22,7 @@ def main():
     args = parser.parse_args()
 
 
+    arrays = {}
     with open(args.scp, 'r') as fid:
         for line in fid:
             tokens = line.strip().split()
@@ -40,7 +41,15 @@ def main():
 
             log_melspec = beer.features.fbank(signal, nfilters=args.nfilters,
                 srate=args.srate)
-            np.save(os.path.join(args.outdir, uttid), log_melspec)
+            arrays[uttid] = log_melspec
+
+    # Derive the name of the output file from the input name of the
+    # scp.
+    bname = os.path.basename(args.scp)
+    root, _ = os.path.splitext(bname)
+    outpath = os.path.join(args.outdir, root)
+
+    np.savez_compressed(outpath, **arrays)
 
 
 if __name__ == '__main__':

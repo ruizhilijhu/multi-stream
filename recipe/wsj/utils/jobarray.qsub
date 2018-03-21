@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
 
 if [ $# -ne 2 ]; then
-    echo "usage: <command> <splitdir>"
+    echo "usage: <command> <indir>"
     exit 1
 fi
 
 . path.sh
 
 cmd=$1
-splitdir=$2
+indir=$2
 
 # ID of the current BATCH starting from 0 to N-1 and padded with 0s
 # at the beginning.
 printf -v BATCH_ID "%02d" $((SGE_TASK_ID - 1 ))
 
-$($cmd "${splitdir}/x${BATCH_ID}")
+$($cmd "${indir}/x${BATCH_ID}"*)
 

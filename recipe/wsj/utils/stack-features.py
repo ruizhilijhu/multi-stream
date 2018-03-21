@@ -21,20 +21,22 @@ def stack_features(data, context):
 
 def run():
     parser = argparse.ArgumentParser('Stack features.')
-    parser.add_argument('indir', help='input directory')
     parser.add_argument('outdir', help='output directory')
-    parser.add_argument('keys', help='"scp" list')
+    parser.add_argument('infile', help='input "npz" file')
     parser.add_argument('--context', type=int, default=0,
                         help='number of context frame (one side) to stack')
     args = parser.parse_args()
 
-    with open(args.keys, 'r') as fid:
-        for line in fid:
-            key = line.strip().split()[0]
-            infname = os.path.join(args.indir, key + '.npy')
-            outfname = os.path.join(args.outdir, key + '.npy')
-            data = np.load(infname)
-            np.save(outfname, stack_features(data, args.context))
+    arrays = np.load(args.infile)
+    out_arrays = {}
+    for uttid in arrays:
+        out_arrays[uttid] = stack_features(arrays[uttid], args.context)
+
+    # Derive the name of the output file from the input file.
+    bname = os.path.basename(args.infile)
+    root, _ = os.path.splitext(bname)
+    outpath = os.path.join(args.outdir, root)
+    np.savez_compressed(outpath, **out_arrays)
 
 
 if __name__ == '__main__':
